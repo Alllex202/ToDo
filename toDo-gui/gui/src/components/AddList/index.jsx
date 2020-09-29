@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import List from "../List";
 import Badge from "../Badge";
 import axios from "axios";
@@ -7,7 +7,7 @@ import closeSVG from '../../assets/img/close.svg';
 
 import './AddList.scss'
 
-const AddList = ({colors, onAdd}) => {
+const AddList = ({ colors, onAdd }) => {
     const [visiblePopup, setVisiblePopup] = useState(false);
     const [selectedColor, selectColor] = useState(3);
     const [inputValue, setInputValue] = useState('');
@@ -27,7 +27,7 @@ const AddList = ({colors, onAdd}) => {
 
     const addList = () => {
         if (!inputValue) {
-            alert('Name is empty!!!!');
+            alert('Name is empty!!!');
             return;
         }
         setIsLoading(true);
@@ -36,13 +36,16 @@ const AddList = ({colors, onAdd}) => {
                 name: inputValue,
                 colorId: selectedColor,
             })
-            .then(({data}) => {
+            .then(({ data }) => {
                 const color = colors.filter((color) => {
                     return color.id === selectedColor
                 })[0].name;
-                const listObj = {...data, color: {name: color}};
+                const listObj = { ...data, color: { name: color }, tasks: [] };
                 onAdd(listObj);
                 onClose();
+            })
+            .catch(() => {
+                alert('Не удалось добавить список')
             })
             .finally(() => {
                 setIsLoading(false);
@@ -52,38 +55,38 @@ const AddList = ({colors, onAdd}) => {
     return (
         <div className={'add-list'}>
             <List onClick={() => setVisiblePopup(true)}
-                  items={[
-                      {
-                          className: 'list__add-button',
-                          icon: (
-                              <svg width="16"
-                                   height="16"
-                                   viewBox="0 0 16 16"
-                                   fill="none"
-                                   xmlns="http://www.w3.org/2000/svg">
-                                  <path
-                                      d="M8 1V15"
-                                      stroke="black"
-                                      strokeWidth="2"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"/>
-                                  <path d="M1 8H15"
-                                        stroke="black"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"/>
-                              </svg>
+                items={[
+                    {
+                        className: 'list__add-button',
+                        icon: (
+                            <svg width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M8 1V15"
+                                    stroke="black"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round" />
+                                <path d="M1 8H15"
+                                    stroke="black"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round" />
+                            </svg>
 
-                          ),
-                          name: 'Добавить список',
-                      }
-                  ]}/>
+                        ),
+                        name: 'Добавить список',
+                    }
+                ]} />
             {visiblePopup && (
                 <div className={'add-list__popup'}>
                     <img onClick={onClose}
-                         src={closeSVG} alt="close button" className="add-list__popup-close-btn"/>
+                        src={closeSVG} alt="close button" className="add-list__popup-close-btn" />
                     <input value={inputValue} onChange={(event) => setInputValue(event.target.value)}
-                           className={'field'} type={'text'} placeholder={'Название списка'}/>
+                        className={'field'} type={'text'} placeholder={'Название списка'} />
                     <div className={'add-list__popup-colors'}>
                         {colors.map(color => (
                             <Badge
@@ -94,8 +97,9 @@ const AddList = ({colors, onAdd}) => {
                             />
                         ))}
                     </div>
-                    <button onClick={addList}
-                            className={'button'}>{isLoading ? 'Добавление ...' : 'Добавить список'}</button>
+                    <button disabled={isLoading} onClick={addList}
+                        className={'button'}>{isLoading ? 'Добавление ...' : 'Добавить список'}
+                    </button>
                 </div>
             )}
         </div>
