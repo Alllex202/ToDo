@@ -19,7 +19,7 @@ const AddTasksForm = ({ list, onAddTask }) => {
         const task = {
             listId: list.id,
             text: inputValue,
-            complete: false,
+            completed: false,
         };
         setIsLoading(true);
         axios
